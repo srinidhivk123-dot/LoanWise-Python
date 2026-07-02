@@ -1,14 +1,4 @@
-# ==========================================
-# LoanWise – Smart Loan & Savings Planner
-# Console-Based Python Mini Project
-# ==========================================
-
 import math
-
-
-# -------------------------------
-# Input Validation Functions
-# -------------------------------
 
 def get_age():
     while True:
@@ -57,11 +47,6 @@ def get_years():
         except ValueError:
             print("Enter a valid integer.")
 
-
-# -------------------------------
-# EMI Calculation Function
-# -------------------------------
-
 def calculate_emi(principal, annual_rate, years):
     monthly_rate = annual_rate / (12 * 100)
     months = years * 12
@@ -76,11 +61,6 @@ def calculate_emi(principal, annual_rate, years):
     total_interest = total_payment - principal
 
     return emi, total_interest, total_payment
-
-
-# -------------------------------
-# Loan Eligibility Checker
-# -------------------------------
 
 def loan_eligibility():
     print("\n===== Loan Eligibility Checker =====")
@@ -107,11 +87,6 @@ def loan_eligibility():
     else:
         print("\nSorry! You are NOT ELIGIBLE for the loan.")
 
-
-# -------------------------------
-# EMI Calculator
-# -------------------------------
-
 def emi_calculator():
     print("\n===== EMI Calculator =====")
 
@@ -126,15 +101,6 @@ def emi_calculator():
     print(f"Monthly EMI     : ₹{emi:.2f}")
     print(f"Total Interest  : ₹{interest:.2f}")
     print(f"Total Repayment : ₹{total:.2f}")
-
-
-# -------------------------------
-# Compare Two Bank Loans
-# -------------------------------
-
-# -------------------------------
-# Compare Two Bank Loans
-# -------------------------------
 
 def compare_loans():
     print("\n===== Compare Two Bank Loans =====")
@@ -192,9 +158,7 @@ def compare_loans():
         print("Recommendation: Bank 2 is the better choice.")
     else:
         print("Both banks offer nearly equal benefits. Choose based on additional services.")
-# -------------------------------
-# Savings Planner
-# -------------------------------
+
 
 def savings_planner():
     print("\n===== Savings Planner =====")
@@ -218,9 +182,6 @@ def savings_planner():
         print(f"\nSuggested Monthly Savings: ₹{balance:.2f}")
 
 
-# -------------------------------
-# Main Menu
-# -------------------------------
 
 def main():
     while True:
@@ -255,9 +216,5 @@ def main():
         else:
             print("Invalid choice! Please select between 1 and 5.")
 
-
-# -------------------------------
-# Program Starts Here
-# -------------------------------
 
 main()
