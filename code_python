@@ -78,15 +78,6 @@ class Savings(Loan):
         print("Save",round(save,2),"per month")
         history.append(f"Savings : {round(save,2)}/month")
 
-user,pswd="admin","123"
-
-for i in range(3):
-    if input("Username: ")==user and input("Password: ")==pswd:
-        break
-    print("Invalid Login")
-else:
-    print("Access Denied")
-    exit()
 
 e=Eligibility()
 m=EMI()
