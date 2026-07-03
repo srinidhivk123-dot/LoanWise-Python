@@ -1,220 +1,138 @@
 import math
 
-def get_age():
-    while True:
-        try:
-            age = int(input("Enter Age (21-60): "))
-            if 21 <= age <= 60:
-                return age
+history=[]
+
+class Loan:
+    def __init__(self):
+        self.__amt=0
+        self.__rate=0
+        self.__time=0
+
+    def set(self,a,r,t):
+        self.__amt=a
+        self.__rate=r
+        self.__time=t
+
+    def get(self):
+        return self.__amt,self.__rate,self.__time
+
+    def calculate(self):
+        pass
+
+class Eligibility(Loan):
+    def calculate(self):
+        age=int(input("Age: "))
+        income=float(input("Monthly Income: "))
+        if 21<=age<=60 and income>=25000:
+            print("Eligible")
+            history.append("Eligibility : Eligible")
+        else:
+            print("Not Eligible")
+            history.append("Eligibility : Not Eligible")
+
+class EMI(Loan):
+    def calculate(self):
+        a=float(input("Loan Amount: "))
+        r=float(input("Rate: "))
+        t=int(input("Years: "))
+        self.set(a,r,t)
+
+        a,r,t=self.get()
+        r=r/12/100
+        n=t*12
+        emi=(a*r*(1+r)**n)/((1+r)**n-1)
+        print("EMI =",round(emi,2))
+        history.append(f"EMI : {round(emi,2)}")
+
+class Compare(Loan):
+    def calculate(self):
+        a=float(input("Loan Amount: "))
+        t=int(input("Years: "))
+        r1=float(input("Bank1 Rate: "))
+        r2=float(input("Bank2 Rate: "))
+
+        def emi(r):
+            r=r/12/100
+            n=t*12
+            return (a*r*(1+r)**n)/((1+r)**n-1)
+
+        e1,e2=emi(r1),emi(r2)
+
+        print("Bank1 EMI:",round(e1,2))
+        print("Bank2 EMI:",round(e2,2))
+
+        if e1<e2:
+            print("Bank1 Better")
+        elif e2<e1:
+            print("Bank2 Better")
+        else:
+            print("Both Same")
+
+        history.append("Compared Two Loans")
+        
+class Savings(Loan):
+    def calculate(self):
+        goal=float(input("Goal Amount: "))
+        months=int(input("Months: "))
+        save=goal/months
+        print("Save",round(save,2),"per month")
+        history.append(f"Savings : {round(save,2)}/month")
+
+user,pswd="admin","123"
+
+for i in range(3):
+    if input("Username: ")==user and input("Password: ")==pswd:
+        break
+    print("Invalid Login")
+else:
+    print("Access Denied")
+    exit()
+
+e=Eligibility()
+m=EMI()
+c=Compare()
+s=Savings()
+
+while True:
+    try:
+        print("\n1.Eligibility")
+        print("2.EMI Calculator")
+        print("3.Compare Loans")
+        print("4.Savings Planner")
+        print("5.View History")
+        print("6.Exit")
+
+        ch=int(input("Choice: "))
+
+        if ch==1:
+            e.calculate()
+
+        elif ch==2:
+            m.calculate()
+
+        elif ch==3:
+            c.calculate()
+
+        elif ch==4:
+            s.calculate()
+
+        elif ch==5:
+            if history:
+                print("\nHistory")
+                for i in history:
+                    print("-",i)
             else:
-                print("Invalid! Age must be between 21 and 60.")
-        except ValueError:
-            print("Please enter a valid integer.")
+                print("No History")
 
-
-def get_positive_value(message):
-    while True:
-        try:
-            value = round(float(input(message)), 2)
-            if value > 0:
-                return value
-            else:
-                print("Value must be positive.")
-        except ValueError:
-            print("Invalid input. Enter a numeric value.")
-
-
-def get_interest():
-    while True:
-        try:
-            rate = float(input("Enter Annual Interest Rate (1-99%): "))
-            if 1 <= rate <= 99:
-                return rate
-            else:
-                print("Interest rate must be between 1 and 99.")
-        except ValueError:
-            print("Enter a valid interest rate.")
-
-
-def get_years():
-    while True:
-        try:
-            years = int(input("Enter Loan Tenure (1-99 years): "))
-            if 1 <= years <= 99:
-                return years
-            else:
-                print("Years must be between 1 and 99.")
-        except ValueError:
-            print("Enter a valid integer.")
-
-def calculate_emi(principal, annual_rate, years):
-    monthly_rate = annual_rate / (12 * 100)
-    months = years * 12
-
-    if monthly_rate == 0:
-        emi = principal / months
-    else:
-        emi = (principal * monthly_rate * math.pow(1 + monthly_rate, months)) / \
-              (math.pow(1 + monthly_rate, months) - 1)
-
-    total_payment = emi * months
-    total_interest = total_payment - principal
-
-    return emi, total_interest, total_payment
-
-def loan_eligibility():
-    print("\n===== Loan Eligibility Checker =====")
-
-    age = get_age()
-    income = get_positive_value("Enter Monthly Income: ₹")
-    existing_emi = get_positive_value("Enter Existing Monthly EMI: ₹")
-    loan_amount = round(get_positive_value("Enter Required Loan Amount: ₹"))
-
-    rate = get_interest()
-    years = get_years()
-
-    emi, _, _ = calculate_emi(loan_amount, rate, years)
-
-    affordable_emi = income * 0.40
-
-    print("\n----------- Result -----------")
-    print(f"Affordable EMI : ₹{affordable_emi:.2f}")
-    print(f"New Loan EMI   : ₹{emi:.2f}")
-    print(f"Existing EMI   : ₹{existing_emi:.2f}")
-
-    if (existing_emi + emi) <= affordable_emi:
-        print("\nCongratulations! You are ELIGIBLE for the loan.")
-    else:
-        print("\nSorry! You are NOT ELIGIBLE for the loan.")
-
-def emi_calculator():
-    print("\n===== EMI Calculator =====")
-
-    principal = round(get_positive_value("Enter Loan Amount: ₹"))
-    rate = get_interest()
-    years = get_years()
-
-    emi, interest, total = calculate_emi(principal, rate, years)
-
-    print("\n----------- EMI Details -----------")
-    print(f"Loan Amount     : ₹{principal:.2f}")
-    print(f"Monthly EMI     : ₹{emi:.2f}")
-    print(f"Total Interest  : ₹{interest:.2f}")
-    print(f"Total Repayment : ₹{total:.2f}")
-
-def compare_loans():
-    print("\n===== Compare Two Bank Loans =====")
-
-    print("\n--- Enter Bank 1 Details ---")
-    loan1 = round(get_positive_value("Loan Amount (₹): "))
-    rate1 = get_interest()
-    years1 = get_years()
-
-    emi1, interest1, total1 = calculate_emi(loan1, rate1, years1)
-
-    print("\n--- Enter Bank 2 Details ---")
-    loan2 = round(get_positive_value("Loan Amount (₹): "))
-    rate2 = get_interest()
-    years2 = get_years()
-
-    emi2, interest2, total2 = calculate_emi(loan2, rate2, years2)
-
-    print("\n================ Loan Comparison ================")
-    print("{:<20}{:<18}{:<18}".format("Parameter", "Bank 1", "Bank 2"))
-    print("-" * 60)
-    print("{:<20}{:<18.2f}{:<18.2f}".format("Loan Amount", loan1, loan2))
-    print("{:<20}{:<18.2f}{:<18.2f}".format("Interest Rate (%)", rate1, rate2))
-    print("{:<20}{:<18}{:<18}".format("Tenure (Years)", years1, years2))
-    print("{:<20}{:<18.2f}{:<18.2f}".format("Monthly EMI", emi1, emi2))
-    print("{:<20}{:<18.2f}{:<18.2f}".format("Total Interest", interest1, interest2))
-    print("{:<20}{:<18.2f}{:<18.2f}".format("Total Repayment", total1, total2))
-
-    print("\n----------- Recommendation -----------")
-
-    score1 = 0
-    score2 = 0
-
-    # Lower EMI is better
-    if emi1 < emi2:
-        score1 += 1
-    elif emi2 < emi1:
-        score2 += 1
-
-    # Lower total interest is better
-    if interest1 < interest2:
-        score1 += 1
-    elif interest2 < interest1:
-        score2 += 1
-
-    # Lower total repayment is better
-    if total1 < total2:
-        score1 += 1
-    elif total2 < total1:
-        score2 += 1
-
-    if score1 > score2:
-        print("Recommendation: Bank 1 is the better choice.")
-    elif score2 > score1:
-        print("Recommendation: Bank 2 is the better choice.")
-    else:
-        print("Both banks offer nearly equal benefits. Choose based on additional services.")
-
-
-def savings_planner():
-    print("\n===== Savings Planner =====")
-
-    income = get_positive_value("Enter Monthly Income: ₹")
-    expenses = get_positive_value("Enter Monthly Expenses: ₹")
-    emi = get_positive_value("Enter Monthly EMI: ₹")
-
-    balance = income - expenses - emi
-
-    print("\n----------- Savings Report -----------")
-    print(f"Income      : ₹{income:.2f}")
-    print(f"Expenses    : ₹{expenses:.2f}")
-    print(f"Monthly EMI : ₹{emi:.2f}")
-    print(f"Balance     : ₹{balance:.2f}")
-
-    if balance < 0:
-        print("\nWARNING! Your expenses exceed your income.")
-        print("Reduce expenses before taking a loan.")
-    else:
-        print(f"\nSuggested Monthly Savings: ₹{balance:.2f}")
-
-
-
-def main():
-    while True:
-        print("\n")
-        print("=" * 45)
-        print(" LoanWise – Smart Loan & Savings Planner")
-        print("=" * 45)
-        print("1. Loan Eligibility Checker")
-        print("2. EMI Calculator")
-        print("3. Compare Two Bank Loans")
-        print("4. Savings Planner")
-        print("5. Exit")
-
-        choice = input("\nEnter your choice (1-5): ")
-
-        if choice == "1":
-            loan_eligibility()
-
-        elif choice == "2":
-            emi_calculator()
-
-        elif choice == "3":
-            compare_loans()
-
-        elif choice == "4":
-            savings_planner()
-
-        elif choice == "5":
-            print("\nThank You for using LoanWise! Have a Great Day!")
+        elif ch==6:
+            print("Thank You")
             break
 
         else:
-            print("Invalid choice! Please select between 1 and 5.")
+            print("Invalid Choice")
 
+    except ValueError:
+        print("Enter Numbers Only")
 
-main()
+    except Exception as e:
+        print("Error:",e)
